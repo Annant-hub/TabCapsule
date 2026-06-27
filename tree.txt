@@ -1,0 +1,55 @@
+.
+├── assets
+│   └── react.svg
+├── docs
+│   ├── API_CONTRACTS.md
+│   ├── ARCHITECTURE.md
+│   ├── DATABASE_SCHEMA.md
+│   ├── DECISIONS
+│   ├── DOMAIN_MODEL.md
+│   ├── PRD.md
+│   └── ROADMAP.md
+├── entrypoints
+│   ├── background.ts
+│   ├── content.ts
+│   └── popup
+│       ├── App.css
+│       ├── App.tsx
+│       ├── index.html
+│       ├── main.tsx
+│       └── style.css
+├── filestructure.txt
+├── package.json
+├── package-lock.json
+├── public
+│   ├── icon
+│   │   ├── 128.png
+│   │   ├── 16.png
+│   │   ├── 32.png
+│   │   ├── 48.png
+│   │   └── 96.png
+│   └── wxt.svg
+├── README.md
+├── src
+│   ├── app
+│   ├── assets
+│   ├── background
+│   ├── database
+│   ├── features
+│   │   ├── history
+│   │   ├── search
+│   │   ├── session
+│   │   └── settings
+│   ├── lib
+│   ├── shared
+│   │   ├── constants
+│   │   ├── hooks
+│   │   ├── icons
+│   │   ├── ui
+│   │   └── utils
+│   └── types
+├── tree.txt
+├── tsconfig.json
+└── wxt.config.ts
+
+26 directories, 27 files
