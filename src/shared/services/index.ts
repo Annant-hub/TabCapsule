@@ -1,0 +1,1 @@
+export { ChromeTabService } from "./ChromeTabService";
