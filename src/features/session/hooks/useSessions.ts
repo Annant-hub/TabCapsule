@@ -4,25 +4,34 @@ import type { Session } from "../models";
 
 const sessionService = new SessionService();
 
+
+
 export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function loadSessions() {
-    setLoading(true);
+async function loadSessions() {
+  setLoading(true);
 
-    try {
-      const result = await sessionService.getAllSessions();
-      setSessions(result);
-    } finally {
-      setLoading(false);
-    }
-  }
+  try {
+    const result = await sessionService.getAllSessions();
 
-  async function saveWorkspace(sessionName: string) {
-    await sessionService.saveSession(sessionName);
-    await loadSessions();
+    console.log("Loaded Sessions:", result);
+
+    setSessions(result);
+  } finally {
+    setLoading(false);
   }
+}
+ async function saveWorkspace(sessionName: string) {
+  console.log("Saving workspace...");
+
+  await sessionService.saveSession(sessionName);
+
+  console.log("Workspace saved.");
+
+  await loadSessions();
+}
 
   async function restoreWorkspace(sessionId: string) {
     await sessionService.restoreSession(sessionId);

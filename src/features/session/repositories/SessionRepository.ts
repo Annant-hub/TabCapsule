@@ -45,10 +45,16 @@ export class SessionRepository {
     return await this.database.sessions.count();
   }
 
-  async findFavorites(): Promise<Session[]> {
-    return await this.database.sessions
-      .where("favorite")
-      .equals(1)
-      .toArray();
-  }
+//   async findFavorites(): Promise<Session[]> {
+//     return await this.database.sessions
+//       .where("favorite")
+//       .equals(1)
+//       .toArray();
+//   }
+
+async findFavorites(): Promise<Session[]> {
+  return await this.database.sessions
+    .filter((session) => session.favorite)
+    .toArray();
+}
 }

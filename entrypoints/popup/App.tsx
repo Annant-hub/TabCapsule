@@ -1,15 +1,13 @@
-// 
-
 import "./App.css";
 
-// import { SaveWorkspaceButton } from "@/features/session/components/SaveWorkspaceButton";
-// import { SessionList } from "@/features/session/components/SessionList";
-
-
+import { useSessions } from "../../src/features/session/hooks";
 import { SaveWorkspaceButton } from "../../src/features/session/components/SaveWorkspaceButton";
 import { SessionList } from "../../src/features/session/components/SessionList";
 
 function App() {
+  
+  const session = useSessions();
+  
   return (
     <main className="min-w-[420px] min-h-[600px] p-4 bg-white">
       <header className="mb-6">
@@ -23,7 +21,9 @@ function App() {
       </header>
 
       <section className="mb-8">
-        <SaveWorkspaceButton />
+        <SaveWorkspaceButton
+          saveWorkspace={session.saveWorkspace}
+        />
       </section>
 
       <section>
@@ -31,7 +31,14 @@ function App() {
           Saved Workspaces
         </h2>
 
-        <SessionList />
+        <SessionList
+          sessions={session.sessions}
+          loading={session.loading}
+          restoreWorkspace={session.restoreWorkspace}
+          deleteWorkspace={session.deleteWorkspace}
+          renameWorkspace={session.renameWorkspace}
+          toggleFavorite={session.toggleFavorite}
+        />
       </section>
     </main>
   );

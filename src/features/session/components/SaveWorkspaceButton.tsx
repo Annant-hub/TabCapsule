@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { useSessions } from "../hooks";
 
-export function SaveWorkspaceButton() {
-  const { saveWorkspace } = useSessions();
+interface SaveWorkspaceButtonProps {
+  saveWorkspace: (sessionName: string) => Promise<void>;
+}
 
+export function SaveWorkspaceButton({
+  saveWorkspace,
+}: SaveWorkspaceButtonProps) {
   const [sessionName, setSessionName] = useState("");
+  const [saving, setSaving] = useState(false);
 
   async function handleSave() {
     if (!sessionName.trim()) {
@@ -12,9 +16,16 @@ export function SaveWorkspaceButton() {
       return;
     }
 
-    await saveWorkspace(sessionName);
+    if (saving) return;
 
-    setSessionName("");
+    setSaving(true);
+
+    try {
+      await saveWorkspace(sessionName);
+      setSessionName("");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -28,10 +39,11 @@ export function SaveWorkspaceButton() {
       />
 
       <button
+        disabled={saving}
         onClick={handleSave}
-        className="rounded-lg bg-blue-600 text-white py-2 hover:bg-blue-700"
+        className="rounded-lg bg-blue-600 text-white py-2 disabled:opacity-50"
       >
-        Save Workspace
+        {saving ? "Saving..." : "Save Workspace"}
       </button>
     </div>
   );

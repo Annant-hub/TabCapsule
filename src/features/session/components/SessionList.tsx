@@ -1,16 +1,28 @@
+import type { Session } from "../models";
 import { SessionCard } from "./SessionCard";
-import { useSessions } from "../hooks";
 
-export function SessionList() {
-  const {
-    sessions,
-    loading,
-    restoreWorkspace,
-    deleteWorkspace,
-    renameWorkspace,
-    toggleFavorite,
-  } = useSessions();
+interface SessionListProps {
+  sessions: Session[];
+  loading: boolean;
 
+  restoreWorkspace: (id: string) => Promise<void>;
+  deleteWorkspace: (id: string) => Promise<void>;
+  renameWorkspace: (
+    id: string,
+    newName: string
+  ) => Promise<void>;
+
+  toggleFavorite: (id: string) => Promise<void>;
+}
+
+export function SessionList({
+  sessions,
+  loading,
+  restoreWorkspace,
+  deleteWorkspace,
+  renameWorkspace,
+  toggleFavorite,
+}: SessionListProps) {
   if (loading) {
     return (
       <div className="flex justify-center py-8">

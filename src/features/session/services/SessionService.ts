@@ -8,6 +8,7 @@ import { ChromeTabService } from "../../../shared/services";
 import { SessionFactory } from "../utils";
 
 import type { Session } from "../models";
+import { db } from "@/src/database/db";
 
 export class SessionService {
   constructor(
@@ -31,8 +32,18 @@ export class SessionService {
         chromeTabs
       );
 
+    // await this.sessionRepository.save(session);
+    // await this.browserTabRepository.saveAll(browserTabs);
+
+    await db.transaction(
+  "rw",
+  db.sessions,
+  db.tabs,
+  async () => {
     await this.sessionRepository.save(session);
     await this.browserTabRepository.saveAll(browserTabs);
+  }
+);
 
     return session;
   }
