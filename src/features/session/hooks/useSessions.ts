@@ -8,20 +8,11 @@ const sessionService = new SessionService();
 
 export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
 async function loadSessions() {
-  setLoading(true);
-
-  try {
-    const result = await sessionService.getAllSessions();
-
-    console.log("Loaded Sessions:", result);
-
-    setSessions(result);
-  } finally {
-    setLoading(false);
-  }
+  const result = await sessionService.getAllSessions();
+  setSessions(result);
 }
  async function saveWorkspace(sessionName: string) {
   console.log("Saving workspace...");
@@ -69,8 +60,14 @@ async function loadSessions() {
   }
 
   useEffect(() => {
-    loadSessions();
-  }, []);
+  async function init() {
+    const result = await sessionService.getAllSessions();
+    setSessions(result);
+    setLoading(false);
+  }
+
+  init();
+}, []);
 
   return {
     sessions,

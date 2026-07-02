@@ -9,7 +9,7 @@ function App() {
   const session = useSessions();
   
   return (
-    <main className="min-w-[420px] min-h-[600px] p-4 bg-white">
+    <main className="w-[420px] min-h-[600px] p-4 bg-white">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">
           TabCapsule
