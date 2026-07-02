@@ -1,34 +1,39 @@
-import { useState } from 'react';
-import reactLogo from '@/assets/react.svg';
-import wxtLogo from '/wxt.svg';
-import './App.css';
+// 
+
+import "./App.css";
+
+// import { SaveWorkspaceButton } from "@/features/session/components/SaveWorkspaceButton";
+// import { SessionList } from "@/features/session/components/SessionList";
+
+
+import { SaveWorkspaceButton } from "../../src/features/session/components/SaveWorkspaceButton";
+import { SessionList } from "../../src/features/session/components/SessionList";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://wxt.dev" target="_blank">
-          <img src={wxtLogo} className="logo" alt="WXT logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>WXT + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+    <main className="min-w-[420px] min-h-[600px] p-4 bg-white">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold">
+          TabCapsule
+        </h1>
+
+        <p className="text-gray-500 text-sm">
+          Save and restore browser workspaces
         </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the WXT and React logos to learn more
-      </p>
-    </>
+      </header>
+
+      <section className="mb-8">
+        <SaveWorkspaceButton />
+      </section>
+
+      <section>
+        <h2 className="font-semibold mb-4">
+          Saved Workspaces
+        </h2>
+
+        <SessionList />
+      </section>
+    </main>
   );
 }
 
