@@ -65,13 +65,14 @@ const [sort, setSort] = useState<
 
 
         <SessionList
-          sessions={session.sessions}
-          loading={session.loading}
-          restoreWorkspace={session.restoreWorkspace}
-          deleteWorkspace={session.deleteWorkspace}
-          renameWorkspace={session.renameWorkspace}
-          toggleFavorite={session.toggleFavorite}
-        />
+    sessions={session.sessions}
+    tabs={session.tabs}
+    loading={session.loading}
+    restoreWorkspace={session.restoreWorkspace}
+    deleteWorkspace={session.deleteWorkspace}
+    renameWorkspace={session.renameWorkspace}
+    toggleFavorite={session.toggleFavorite}
+/>
       </section>
     </main>
   );

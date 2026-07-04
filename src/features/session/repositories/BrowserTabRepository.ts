@@ -46,4 +46,8 @@ export class BrowserTabRepository {
   async count(): Promise<number> {
     return await this.database.tabs.count();
   }
+
+  async findAll(): Promise<BrowserTab[]> {
+  return await this.database.tabs.toArray();
+}
 }

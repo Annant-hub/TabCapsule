@@ -9,8 +9,10 @@ import { SessionFactory } from "../utils";
 
 import type { Session } from "../models";
 import { db } from "@/src/database/db";
-
 import { DuplicateWorkspaceError } from "../errors";
+
+import type { BrowserTab } from "../models";
+
 
 export class SessionService {
   constructor(
@@ -182,5 +184,8 @@ async sortSessions(
     default:
       return sessions;
   }
+}
+async getAllTabs(): Promise<BrowserTab[]> {
+  return await this.browserTabRepository.findAll();
 }
 }

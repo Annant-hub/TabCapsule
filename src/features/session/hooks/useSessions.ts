@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SessionService } from "../services";
-import type { Session } from "../models";
+
+import type { Session, BrowserTab } from "../models";
 
 const sessionService = new SessionService();
 
@@ -8,10 +9,17 @@ export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [tabs, setTabs] = useState<BrowserTab[]>([]);
+
   async function loadSessions() {
-    const result = await sessionService.getAllSessions();
-    setSessions(result);
-  }
+  const [sessionResult, tabResult] = await Promise.all([
+    sessionService.getAllSessions(),
+    sessionService.getAllTabs(),
+  ]);
+
+  setSessions(sessionResult);
+  setTabs(tabResult);
+}
 
   async function saveWorkspace(
     sessionName: string,
@@ -69,16 +77,19 @@ export function useSessions() {
   }
 
   useEffect(() => {
-    async function init() {
-      const result =
-        await sessionService.getAllSessions();
+  async function init() {
+    const [sessionResult, tabResult] = await Promise.all([
+      sessionService.getAllSessions(),
+      sessionService.getAllTabs(),
+    ]);
 
-      setSessions(result);
-      setLoading(false);
-    }
+    setSessions(sessionResult);
+    setTabs(tabResult);
+    setLoading(false);
+  }
 
-    init();
-  }, []);
+  init();
+}, []);
 
   async function sortSessions(
   sortBy:
@@ -97,6 +108,7 @@ export function useSessions() {
   return {
     sessions,
     loading,
+    tabs,
 
     saveWorkspace,
     restoreWorkspace,
@@ -109,5 +121,7 @@ export function useSessions() {
 
     refresh: loadSessions,
     sortSessions,
+
+    
   };
 }

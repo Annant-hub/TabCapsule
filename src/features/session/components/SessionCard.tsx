@@ -1,7 +1,8 @@
-import type { Session } from "../models";
+import type { Session, BrowserTab } from "../models";
 
 interface SessionCardProps {
   session: Session;
+  tabs: BrowserTab[];
 
   onRestore: (id: string) => void;
   onDelete: (id: string) => void;
@@ -11,20 +12,48 @@ interface SessionCardProps {
 
 export function SessionCard({
   session,
+  tabs,
   onRestore,
   onDelete,
   onFavorite,
   onRename,
 }: SessionCardProps) {
+  console.log(session.name, tabs);
   return (
     <div className="rounded-lg border p-4 shadow-sm flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-semibold">{session.name}</h3>
 
-          <p className="text-sm text-gray-500">
-            {session.tabCount} Tabs
-          </p>
+          <div className="mt-3 flex items-center gap-2">
+  {tabs.slice(0, 6).map((tab) => {
+    const favicon =
+      tab.faviconUrl ||
+      `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(
+        tab.url
+      )}&sz=64`;
+
+    return (
+      <img
+        key={tab.id}
+        src={favicon}
+        alt={tab.title}
+        title={tab.title}
+        className="h-6 w-6 rounded border border-gray-200 bg-white"
+        onError={(e) => {
+  e.currentTarget.src =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect width='32' height='32' rx='6' fill='%23e5e7eb'/%3E%3C/svg%3E";
+}}
+      />
+    );
+  })}
+
+  {tabs.length > 6 && (
+    <span className="text-xs text-gray-500">
+      +{tabs.length - 6}
+    </span>
+  )}
+</div>
         </div>
 
         <button
