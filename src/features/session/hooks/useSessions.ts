@@ -4,25 +4,22 @@ import type { Session } from "../models";
 
 const sessionService = new SessionService();
 
-
-
 export function useSessions() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
 
-async function loadSessions() {
-  const result = await sessionService.getAllSessions();
-  setSessions(result);
-}
- async function saveWorkspace(sessionName: string) {
-  console.log("Saving workspace...");
+  async function loadSessions() {
+    const result = await sessionService.getAllSessions();
+    setSessions(result);
+  }
 
-  await sessionService.saveSession(sessionName);
-
-  console.log("Workspace saved.");
-
-  await loadSessions();
-}
+  async function saveWorkspace(
+    sessionName: string,
+    replace = false
+  ) {
+    await sessionService.saveSession(sessionName, replace);
+    await loadSessions();
+  }
 
   async function restoreWorkspace(sessionId: string) {
     await sessionService.restoreSession(sessionId);
@@ -59,15 +56,43 @@ async function loadSessions() {
     setSessions(result);
   }
 
-  useEffect(() => {
-  async function init() {
-    const result = await sessionService.getAllSessions();
+  async function filterFavorites(showFavorites: boolean) {
+    if (!showFavorites) {
+      await loadSessions();
+      return;
+    }
+
+    const result =
+      await sessionService.getFavoriteSessions();
+
     setSessions(result);
-    setLoading(false);
   }
 
-  init();
-}, []);
+  useEffect(() => {
+    async function init() {
+      const result =
+        await sessionService.getAllSessions();
+
+      setSessions(result);
+      setLoading(false);
+    }
+
+    init();
+  }, []);
+
+  async function sortSessions(
+  sortBy:
+    | "latest"
+    | "oldest"
+    | "name-asc"
+    | "name-desc"
+    | "most-restored"
+) {
+  const result =
+    await sessionService.sortSessions(sortBy);
+
+  setSessions(result);
+}
 
   return {
     sessions,
@@ -78,7 +103,11 @@ async function loadSessions() {
     deleteWorkspace,
     renameWorkspace,
     toggleFavorite,
+
     search,
+    filterFavorites,
+
     refresh: loadSessions,
+    sortSessions,
   };
 }

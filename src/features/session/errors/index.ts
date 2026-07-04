@@ -1,0 +1,1 @@
+export { DuplicateWorkspaceError } from "./DuplicateWorkspaceError";

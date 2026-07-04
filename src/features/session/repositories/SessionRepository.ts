@@ -44,17 +44,18 @@ export class SessionRepository {
   async count(): Promise<number> {
     return await this.database.sessions.count();
   }
-
-//   async findFavorites(): Promise<Session[]> {
-//     return await this.database.sessions
-//       .where("favorite")
-//       .equals(1)
-//       .toArray();
-//   }
-
 async findFavorites(): Promise<Session[]> {
   return await this.database.sessions
     .filter((session) => session.favorite)
     .toArray();
+}
+
+async findByName(name: string): Promise<Session | null> {
+  const session = await this.database.sessions
+    .where("name")
+    .equalsIgnoreCase(name)
+    .first();
+
+  return session ?? null;
 }
 }

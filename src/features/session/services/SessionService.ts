@@ -10,6 +10,8 @@ import { SessionFactory } from "../utils";
 import type { Session } from "../models";
 import { db } from "@/src/database/db";
 
+import { DuplicateWorkspaceError } from "../errors";
+
 export class SessionService {
   constructor(
     private readonly sessionRepository = new SessionRepository(),
@@ -17,36 +19,42 @@ export class SessionService {
     private readonly chromeTabService = new ChromeTabService()
   ) {}
 
-  async saveSession(sessionName: string): Promise<Session> {
-    const chromeTabs =
-      await this.chromeTabService.getCurrentTabs();
+  async saveSession(
+  sessionName: string,
+  replace = false
+): Promise<Session> {
 
-    const session = SessionFactory.createSession(
-      sessionName,
-      chromeTabs.length
+  const existingSession =
+    await this.sessionRepository.findByName(sessionName);
+
+  if (existingSession && !replace) {
+    throw new DuplicateWorkspaceError(sessionName);
+  }
+
+  if (existingSession && replace) {
+    await this.browserTabRepository.deleteBySessionId(existingSession.id);
+    await this.sessionRepository.delete(existingSession.id);
+  }
+
+  const chromeTabs =
+    await this.chromeTabService.getCurrentTabs();
+
+  const session = SessionFactory.createSession(
+    sessionName,
+    chromeTabs.length
+  );
+
+  const browserTabs =
+    SessionFactory.createBrowserTabs(
+      session.id,
+      chromeTabs
     );
 
-    const browserTabs =
-      SessionFactory.createBrowserTabs(
-        session.id,
-        chromeTabs
-      );
+  await this.sessionRepository.save(session);
+  await this.browserTabRepository.saveAll(browserTabs);
 
-    // await this.sessionRepository.save(session);
-    // await this.browserTabRepository.saveAll(browserTabs);
-
-    await db.transaction(
-  "rw",
-  db.sessions,
-  db.tabs,
-  async () => {
-    await this.sessionRepository.save(session);
-    await this.browserTabRepository.saveAll(browserTabs);
-  }
-);
-
-    return session;
-  }
+  return session;
+}
 
   async restoreSession(sessionId: string): Promise<void> {
     const session =
@@ -123,4 +131,56 @@ export class SessionService {
   ): Promise<Session[]> {
     return await this.sessionRepository.search(query);
   }
+
+  async getFavoriteSessions(): Promise<Session[]> {
+  return await this.sessionRepository.findFavorites();
+}
+
+async sortSessions(
+  sortBy:
+    | "latest"
+    | "oldest"
+    | "name-asc"
+    | "name-desc"
+    | "most-restored"
+): Promise<Session[]> {
+
+  const sessions =
+    await this.sessionRepository.findAll();
+
+  switch (sortBy) {
+    case "latest":
+      return sessions.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
+      );
+
+    case "oldest":
+      return sessions.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() -
+          new Date(b.createdAt).getTime()
+      );
+
+    case "name-asc":
+      return sessions.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+    case "name-desc":
+      return sessions.sort((a, b) =>
+        b.name.localeCompare(a.name)
+      );
+
+    case "most-restored":
+      return sessions.sort(
+        (a, b) =>
+          b.restoreCount - a.restoreCount
+      );
+
+    default:
+      return sessions;
+  }
+}
 }
