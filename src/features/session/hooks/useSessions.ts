@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SessionService } from "../services";
 
-import type { Session, BrowserTab } from "../models";
+import type { Session, BrowserTab, RestoreMode} from "../models";
 
 const sessionService = new SessionService();
 
@@ -29,10 +29,17 @@ export function useSessions() {
     await loadSessions();
   }
 
-  async function restoreWorkspace(sessionId: string) {
-    await sessionService.restoreSession(sessionId);
-    await loadSessions();
-  }
+  async function restoreWorkspace(
+  sessionId: string,
+  mode: RestoreMode = "new-window"
+) {
+  await sessionService.restoreSession(
+    sessionId,
+    mode
+  );
+
+  await loadSessions();
+}
 
   async function deleteWorkspace(sessionId: string) {
     await sessionService.deleteSession(sessionId);

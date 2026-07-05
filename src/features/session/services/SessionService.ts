@@ -12,7 +12,7 @@ import { db } from "@/src/database/db";
 import { DuplicateWorkspaceError } from "../errors";
 
 import type { BrowserTab } from "../models";
-
+import type { RestoreMode } from "../models";
 
 export class SessionService {
   constructor(
@@ -58,7 +58,10 @@ export class SessionService {
   return session;
 }
 
-  async restoreSession(sessionId: string): Promise<void> {
+  async restoreSession(
+  sessionId: string,
+  mode: RestoreMode = "new-window"
+): Promise<void> {
     const session =
       await this.sessionRepository.findById(sessionId);
 
@@ -75,7 +78,10 @@ export class SessionService {
       .map((tab) => tab.url)
       .filter((url) => url.length > 0);
 
-    await this.chromeTabService.openWindow(urls);
+    await this.chromeTabService.restoreTabs(
+    urls,
+    mode
+    );
 
     session.lastOpened = new Date().toISOString();
     session.restoreCount++;
