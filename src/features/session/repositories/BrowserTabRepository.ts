@@ -50,4 +50,27 @@ export class BrowserTabRepository {
   async findAll(): Promise<BrowserTab[]> {
   return await this.database.tabs.toArray();
 }
+  async search(
+  query: string
+): Promise<BrowserTab[]> {
+
+  const q = query.toLowerCase();
+
+  return await this.database.tabs
+    .filter(tab =>
+
+      tab.title
+        .toLowerCase()
+        .includes(q)
+
+      ||
+
+      tab.url
+        .toLowerCase()
+        .includes(q)
+
+    )
+    .toArray();
+
+}
 }

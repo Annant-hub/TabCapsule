@@ -135,10 +135,36 @@ export class SessionService {
   }
 
   async searchSessions(
-    query: string
-  ): Promise<Session[]> {
-    return await this.sessionRepository.search(query);
+  query: string
+): Promise<Session[]> {
+
+  const sessions =
+    await this.sessionRepository.search(query);
+
+  const tabs =
+    await this.browserTabRepository.search(query);
+
+  const sessionIds = new Set(
+    sessions.map((s) => s.id)
+  );
+
+  for (const tab of tabs) {
+    sessionIds.add(tab.sessionId);
   }
+
+  const results: Session[] = [];
+
+  for (const id of sessionIds) {
+    const session =
+      await this.sessionRepository.findById(id);
+
+    if (session) {
+      results.push(session);
+    }
+  }
+
+  return results;
+}
 
   async getFavoriteSessions(): Promise<Session[]> {
   return await this.sessionRepository.findFavorites();
