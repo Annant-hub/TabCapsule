@@ -1,4 +1,6 @@
 import type { Session, BrowserTab } from "../models";
+import { useState } from "react";
+import { TabPreviewList } from "./TabPreviewList";
 
 interface SessionCardProps {
   session: Session;
@@ -19,6 +21,8 @@ export function SessionCard({
   onRename,
 }: SessionCardProps) {
   console.log(session.name, tabs);
+   const [expanded, setExpanded] = useState(false);
+
   return (
     <div className="rounded-lg border p-4 shadow-sm flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -55,6 +59,12 @@ export function SessionCard({
   )}
 </div>
         </div>
+
+        <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-blue-600 text-sm hover:underline">
+       {expanded ? "▲ Hide Tabs" : "▼ Show Tabs"}
+        </button>
 
         <button
           onClick={() => onFavorite(session.id)}
@@ -103,6 +113,11 @@ export function SessionCard({
           Delete
         </button>
       </div>
+
+      {expanded && (
+      <TabPreviewList tabs={tabs} />
+      )}
+      
     </div>
   );
 }
