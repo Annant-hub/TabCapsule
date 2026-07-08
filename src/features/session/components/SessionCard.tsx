@@ -6,6 +6,7 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
+  Clock3,
 } from "lucide-react";
 
 import {
@@ -181,17 +182,19 @@ hover:border-rose-500
 
 </div>
 
-<p className="text-sm text-slate-400">
+<div className="flex items-center gap-2 text-sm text-slate-400">
+  <Clock3 size={14} className="text-rose-400" />
 
-  🕒{" "}
-
-  {session.lastOpened
-    ? new Date(
-        session.lastOpened
-      ).toLocaleDateString()
-    : "Never Opened"}
-
-</p>
+  <span>
+    {session.lastOpened
+      ? new Date(session.lastOpened).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "Never opened"}
+  </span>
+</div>
      <div className="h-px bg-slate-800/70" />
       {/* Restore Option */}
 
