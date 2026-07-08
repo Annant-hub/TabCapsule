@@ -13,13 +13,14 @@ export function Toast({
 
   return (
     <div
-      className={`fixed bottom-4 left-1/2 -translate-x-1/2 rounded-lg px-4 py-2 text-white shadow-lg ${
-        type === "success"
-          ? "bg-green-600"
-          : "bg-red-600"
-      }`}
-    >
-      {message}
-    </div>
+  className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-white shadow-2xl transition-all ${
+    type === "success"
+      ? "bg-emerald-600"
+      : "bg-red-600"
+  }`}
+>
+  {message}
+</div>
+      
   );
 }

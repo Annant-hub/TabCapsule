@@ -1,11 +1,28 @@
 import { useState } from "react";
+import {
+  Edit2,
+  Star,
+  RotateCcw,
+  Trash2,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+
+import {
+  Card,
+  Badge,
+  Button,
+  IconButton,
+} from "../../../shared/ui";
+
+import { TabPreviewList } from "./TabPreviewList";
+
 import type {
   Session,
   BrowserTab,
   RestoreMode,
 } from "../models";
 
-import { TabPreviewList } from "./TabPreviewList";
 
 interface SessionCardProps {
   session: Session;
@@ -38,16 +55,54 @@ export function SessionCard({
     useState(false);
 
   return (
-    <div className="rounded-lg border p-4 shadow-sm flex flex-col gap-4">
+   <Card
+  className="
+    space-y-5
+    p-6
+    transition-all
+    duration-300
+    hover:-translate-y-1
+    hover:shadow-2xl
+    hover:border-rose-500/30
+  "
+>
 
       {/* Header */}
       <div className="flex items-start justify-between">
 
         <div className="flex-1">
 
-          <h3 className="font-semibold text-lg">
-            {session.name}
-          </h3>
+          <div className="flex items-center gap-2">
+
+  <div className="flex items-center gap-2">
+
+ <h3 className="text-xl font-bold tracking-tight text-slate-100">
+    {session.name}
+  </h3>
+
+  <IconButton
+    title="Rename workspace"
+    onClick={() => {
+      const newName = prompt(
+        "Enter new workspace name",
+        session.name
+      );
+
+      if (
+        newName &&
+        newName.trim() &&
+        newName !== session.name
+      ) {
+        onRename(session.id, newName.trim());
+      }
+    }}
+  >
+    <Edit2 size={16} />
+  </IconButton>
+
+</div>
+
+</div>
 
           {/* Favicons */}
           <div className="mt-3 flex items-center gap-2">
@@ -65,7 +120,18 @@ export function SessionCard({
                   src={favicon}
                   alt={tab.title}
                   title={tab.title}
-                  className="h-6 w-6 rounded border border-gray-200 bg-white"
+                 className="
+h-8
+w-8
+rounded-lg
+border
+border-slate-700
+bg-white
+transition-all
+duration-200
+hover:scale-110
+hover:border-rose-500
+"
                   onError={(e) => {
                     e.currentTarget.src =
                       "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Crect width='32' height='32' rx='6' fill='%23e5e7eb'/%3E%3C/svg%3E";
@@ -75,48 +141,61 @@ export function SessionCard({
             })}
 
             {tabs.length > 6 && (
-              <span className="text-xs text-gray-500">
-                +{tabs.length - 6}
-              </span>
+              <Badge>
+               +{tabs.length - 6}
+              </Badge>
             )}
 
           </div>
 
         </div>
 
-        <button
-          onClick={() => onFavorite(session.id)}
-          className="text-xl"
-          title="Favorite Workspace"
-        >
-          {session.favorite ? "⭐" : "☆"}
-        </button>
+       <IconButton  className="transition-transform hover:scale-125"
+  title="Favorite workspace"
+  onClick={() => onFavorite(session.id)}
+>
+  <Star
+    size={20}
+    fill={session.favorite ? "currentColor" : "none"}
+    className={
+      session.favorite
+        ? "text-amber-400"
+        : "text-slate-500"
+    }
+  />
+</IconButton>
 
       </div>
 
-      {/* Information */}
+      {/* Metadata */}
 
-      <div className="text-sm text-gray-600 space-y-1">
+<div className="flex flex-wrap gap-2">
 
-        <p>
-          <strong>Tabs:</strong> {session.tabCount}
-        </p>
+  <Badge>
+    🌐 {session.tabCount} Tabs
+  </Badge>
 
-        <p>
-          <strong>Last Opened:</strong>{" "}
-          {session.lastOpened ?? "Never"}
-        </p>
+  <Badge>
+    🔄 {session.restoreCount} Restores
+  </Badge>
 
-        <p>
-          <strong>Restored:</strong>{" "}
-          {session.restoreCount} times
-        </p>
+</div>
 
-      </div>
+<p className="text-sm text-slate-400">
 
+  🕒{" "}
+
+  {session.lastOpened
+    ? new Date(
+        session.lastOpened
+      ).toLocaleDateString()
+    : "Never Opened"}
+
+</p>
+     <div className="h-px bg-slate-800/70" />
       {/* Restore Option */}
 
-      <label className="flex items-center gap-2 text-sm text-gray-600">
+     <label className="flex items-center gap-3 text-sm text-slate-300">
 
         <input
           type="checkbox"
@@ -135,75 +214,71 @@ export function SessionCard({
 
       {/* Action Buttons */}
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="grid grid-cols-2 gap-3">
 
-        <button
-          onClick={() =>
-            onRestore(
-              session.id,
-              restoreInNewWindow
-                ? "new-window"
-                : "current-window"
-            )
-          }
-          className="rounded bg-green-600 text-white px-3 py-1"
-        >
-          Restore
-        </button>
+  <Button
+    onClick={() =>
+      onRestore(
+        session.id,
+        restoreInNewWindow
+          ? "new-window"
+          : "current-window"
+      )
+    }
+    className="flex items-center justify-center gap-1"
+  >
+    <RotateCcw size={16} />
+    Restore
+  </Button>
 
-        <button
-          onClick={() => {
-            const newName = prompt(
-              "Enter new workspace name",
-              session.name
-            );
+  <Button
+    variant="danger"
+    onClick={() => onDelete(session.id)}
+    className="flex items-center justify-center gap-2"
+  >
+    <Trash2 size={16} />
+    Delete
+  </Button>
 
-            if (
-              newName &&
-              newName.trim() &&
-              newName !== session.name
-            ) {
-              onRename(
-                session.id,
-                newName.trim()
-              );
-            }
-          }}
-          className="rounded bg-yellow-500 text-white px-3 py-1"
-        >
-          Rename
-        </button>
-
-        <button
-          onClick={() =>
-            onDelete(session.id)
-          }
-          className="rounded bg-red-600 text-white px-3 py-1"
-        >
-          Delete
-        </button>
-
-      </div>
+</div>
 
       {/* Show Tabs */}
 
-      <button
-        onClick={() =>
-          setExpanded(!expanded)
-        }
-        className="text-blue-600 text-sm hover:underline self-start"
-      >
-        {expanded
-          ? "▲ Hide Tabs"
-          : "▼ Show Tabs"}
-      </button>
+      <Button
+  variant="ghost"
+  onClick={() => setExpanded(!expanded)}
+  className="flex items-center gap-1 self-start"
+>
+  {expanded ? (
+    <>
+      <ChevronUp size={16} />
+      Hide Tabs
+    </>
+  ) : (
+    <>
+      <ChevronDown size={16} />
+      Show Tabs
+    </>
+  )}
+</Button>
 
       {/* Tab Preview */}
 
-      {expanded && (
-        <TabPreviewList tabs={tabs} />
-      )}
+      <div
+  className={`
+    overflow-auto
+    transition-all
+    duration-300
+    ${
+      expanded
+        ? "max-h-96 opacity-100"
+        : "max-h-0 opacity-0"
+    }
+  `}
+>
+  <TabPreviewList tabs={tabs} />
+</div>
 
-    </div>
+    </Card>
   );
 }

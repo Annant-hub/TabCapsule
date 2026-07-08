@@ -1,7 +1,15 @@
 import { useState } from "react";
+import { Plus } from "lucide-react";
+
 import { DuplicateWorkspaceError } from "../errors";
-import { ConfirmDialog } from "../../../shared/ui";
-import { Toast } from "../../../shared/ui";
+
+import {
+  Card,
+  Button,
+  Input,
+  ConfirmDialog,
+  Toast,
+} from "../../../shared/ui";
 
 interface SaveWorkspaceButtonProps {
   saveWorkspace: (
@@ -15,108 +23,131 @@ export function SaveWorkspaceButton({
 }: SaveWorkspaceButtonProps) {
   const [sessionName, setSessionName] = useState("");
   const [saving, setSaving] = useState(false);
-  const [showReplaceDialog, setShowReplaceDialog] = useState(false);
-  const [pendingWorkspaceName, setPendingWorkspaceName] = useState("");
+
+  const [showReplaceDialog, setShowReplaceDialog] =
+    useState(false);
+
+  const [pendingWorkspaceName, setPendingWorkspaceName] =
+    useState("");
+
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error">("success");
 
-async function handleSave() {
-  if (!sessionName.trim()) {
-    showToast("Please enter a workspace name.", "error");
-    return;
+  const [toastType, setToastType] = useState<
+    "success" | "error"
+  >("success");
+
+  async function handleSave() {
+    if (!sessionName.trim()) {
+      showToast(
+        "Please enter a workspace name.",
+        "error"
+      );
+      return;
+    }
+
+    if (saving) return;
+
+    setSaving(true);
+
+    try {
+      await saveWorkspace(sessionName);
+
+      setSessionName("");
+
+      showToast("Workspace saved successfully.");
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof DuplicateWorkspaceError) {
+        setPendingWorkspaceName(sessionName);
+        setShowReplaceDialog(true);
+      } else {
+        showToast(
+          "Something went wrong.",
+          "error"
+        );
+      }
+    } finally {
+      setSaving(false);
+    }
   }
 
-  if (saving) return;
+  async function handleReplace() {
+    try {
+      await saveWorkspace(
+        pendingWorkspaceName,
+        true
+      );
 
-  setSaving(true);
+      setSessionName("");
 
-  try {
-    await saveWorkspace(sessionName);
-    setSessionName("");
-    showToast("Workspace saved successfully.");
-  }catch (error) {
-  console.log(error);
-
-  if (error instanceof DuplicateWorkspaceError) {
-    console.log("Duplicate detected!");
-
-    setPendingWorkspaceName(sessionName);
-    setShowReplaceDialog(true);
-  } else {
-    console.error(error);
-    showToast("Something went wrong.", "error");
+      showToast(
+        "Workspace replaced successfully."
+      );
+    } finally {
+      setShowReplaceDialog(false);
+      setPendingWorkspaceName("");
+    }
   }
-}
-finally {
-    setSaving(false);
+
+  function showToast(
+    message: string,
+    type: "success" | "error" = "success"
+  ) {
+    setToastMessage(message);
+    setToastType(type);
+    setToastOpen(true);
+
+    setTimeout(() => {
+      setToastOpen(false);
+    }, 2500);
   }
-}
 
-async function handleReplace() {
-  try {
-    await saveWorkspace(pendingWorkspaceName, true);
-    setSessionName("");
-    showToast("Workspace replaced successfully.");
-  } finally {
-    setShowReplaceDialog(false);
-    setPendingWorkspaceName("");
-  }
-}
+  return (
+    <>
+      <Card className="p-5">
+        <div className="space-y-4">
+          <Input
+            placeholder="Workspace name..."
+            value={sessionName}
+            onChange={(e) =>
+              setSessionName(e.target.value)
+            }
+          />
 
-function showToast(
-  message: string,
-  type: "success" | "error" = "success"
-) {
-  setToastMessage(message);
-  setToastType(type);
-  setToastOpen(true);
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex w-full items-center justify-center gap-2"
+          >
+            <Plus size={18} />
 
-  setTimeout(() => {
-    setToastOpen(false);
-  }, 2500);
-}
+            {saving
+              ? "Saving..."
+              : "Save Workspace"}
+          </Button>
+        </div>
+      </Card>
 
- return (
-  <>
-    <div className="flex flex-col gap-3">
-      <input
-        type="text"
-        placeholder="Workspace Name"
-        value={sessionName}
-        onChange={(e) => setSessionName(e.target.value)}
-        className="border rounded-lg px-3 py-2"
+      <ConfirmDialog
+        open={showReplaceDialog}
+        title="Workspace Already Exists"
+        message={`"${pendingWorkspaceName}" already exists. Replace it?`}
+        confirmText="Replace"
+        cancelText="Cancel"
+        onConfirm={handleReplace}
+        onCancel={() => {
+          setShowReplaceDialog(false);
+          setPendingWorkspaceName("");
+        }}
       />
 
-      <button
-        disabled={saving}
-        onClick={handleSave}
-        className="rounded-lg bg-blue-600 text-white py-2 disabled:opacity-50"
-      >
-        {saving ? "Saving..." : "Save Workspace"}
-      </button>
-    </div>
-
-    <ConfirmDialog
-      open={showReplaceDialog}
-      title="Workspace Already Exists"
-      message={`"${pendingWorkspaceName}" already exists. Replace it?`}
-      confirmText="Replace"
-      cancelText="Cancel"
-      onConfirm={handleReplace}
-      onCancel={() => {
-        setShowReplaceDialog(false);
-        setPendingWorkspaceName("");
-      }}
-    />
-
-    <Toast
-      open={toastOpen}
-      message={toastMessage}
-      type={toastType}
-    />
-  </>
-);
-
- 
+      <Toast
+        open={toastOpen}
+        message={toastMessage}
+        type={toastType}
+      />
+    </>
+  );
 }
