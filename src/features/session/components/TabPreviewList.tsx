@@ -9,7 +9,7 @@ export function TabPreviewList({
   tabs,
 }: TabPreviewListProps) {
   return (
-    <div className="mt-3 rounded-lg border bg-gray-50 p-2">
+    <div className="mt-3 rounded-lg border bg-[#0b0d1a] text-white p-2">
       {tabs.map((tab) => (
         <TabPreview
           key={tab.id}

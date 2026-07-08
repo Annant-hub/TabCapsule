@@ -21,18 +21,22 @@ const [sort, setSort] = useState<
 >("latest");
 
   return (
-    <main className="w-[420px] min-h-[600px] p-4 bg-white">
+    <main className="w-[420px] min-h-[600px] p-4 bg-[#0b0d1a] text-white">
+      
       <header className="mb-6 border-b pb-4">
-  <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+  <h1 className="text-2xl font-bold tracking-tight text-white-900">
     📦 TabCapsule
   </h1>
 
-  <p className="mt-1 text-sm text-gray-500">
+  <p className="mt-1 text-sm text-gray-500 ">
     Save and restore browser workspaces instantly
+  </p>
+  <p className="text-xs text-rose-300">
+    🐾 Love Animals
   </p>
 </header>
 
-      <section className="mb-6 rounded-xl border bg-gray-50 p-4 shadow-sm">
+      <section className="mb-6 rounded-xl border  p-4 shadow-sm">
     <SaveWorkspaceButton
         saveWorkspace={session.saveWorkspace}
     />
@@ -73,6 +77,7 @@ const [sort, setSort] = useState<
     renameWorkspace={session.renameWorkspace}
     toggleFavorite={session.toggleFavorite}
 />
+
       </section>
     </main>
   );

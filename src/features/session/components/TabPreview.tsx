@@ -12,7 +12,7 @@ export function TabPreview({ tab }: TabPreviewProps) {
     )}&sz=32`;
 
   return (
-    <div className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-gray-100">
+    <div className="flex items-center gap-3 rounded-lg px-2 py-2 transition-all duration-200 hover:bg-rose-500/10">
       <img
         src={favicon}
         alt={tab.title}
