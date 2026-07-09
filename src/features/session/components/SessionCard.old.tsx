@@ -34,7 +34,7 @@ interface SessionCardProps {
     mode: RestoreMode
   ) => void;
 
-  onDelete: (id: string) => void;
+  onDelete: () => void;
   onFavorite: (id: string) => void;
   onRename: (
     id: string,
@@ -236,7 +236,7 @@ hover:border-rose-500
 
   <Button
     variant="danger"
-    onClick={() => onDelete(session.id)}
+    onClick={onDelete}
     className="flex items-center justify-center gap-2"
   >
     <Trash2 size={16} />

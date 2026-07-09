@@ -114,6 +114,12 @@ export function SaveWorkspaceButton({
             onChange={(e) =>
               setSessionName(e.target.value)
             }
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+              handleSave();
+             }
+              }
+            }
           />
 
           <Button

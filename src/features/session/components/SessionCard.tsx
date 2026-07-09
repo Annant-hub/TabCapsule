@@ -38,7 +38,7 @@ interface SessionCardProps {
     mode: RestoreMode
   ) => void;
 
-  onDelete: (id: string) => void;
+  onDelete: () => void;
 
   onFavorite: (id: string) => void;
 
@@ -67,8 +67,7 @@ const [expanded, setExpanded] = useState(false);
 const [restoreInNewWindow, setRestoreInNewWindow] =
   useState(false);
 
-const [showDeleteDialog, setShowDeleteDialog] =
-  useState(false);
+
 function restoreWorkspace() {
   onRestore(
     session.id,
@@ -208,10 +207,35 @@ return (
       })}
 
       {tabs.length > 5 && (
-        <Badge>
-          +{tabs.length - 5}
-        </Badge>
-      )}
+  <button
+    onClick={togglePreview}
+    title={
+      expanded
+        ? "Hide tabs"
+        : "Show all tabs"
+    }
+    className="
+      flex
+      h-8
+      min-w-[32px]
+      items-center
+      justify-center
+      rounded-lg
+      bg-slate-800
+      px-2
+      text-xs
+      font-medium
+      text-slate-300
+      transition-all
+      hover:bg-rose-500
+      hover:text-white
+    "
+  >
+    {expanded
+      ? "−"
+      : `+${tabs.length - 5}`}
+  </button>
+)}
 
     </div>
 
@@ -234,7 +258,7 @@ return (
 
 <IconButton
   title="Delete workspace"
-  onClick={() => setShowDeleteDialog(true)}
+  onClick={onDelete}
   className="transition-all duration-200 hover:scale-110"
 >
   <Trash2
@@ -345,55 +369,13 @@ return (
 >
   <TabPreviewList tabs={tabs} />
 
-  {/* Action Buttons */}
-<Button
-  variant="ghost"
-  onClick={togglePreview}
-  className="flex items-center gap-2 self-start"
->
-  {expanded ? (
-    <>
-      <ChevronUp size={16} />
-      Hide Tabs
-    </>
-  ) : (
-    <>
-      <ChevronDown size={16} />
-      Show Tabs
-    </>
-  )}
-</Button>
-
-<div
-  className={`
-    overflow-hidden
-    transition-all
-    duration-300
-    ${
-      expanded
-        ? "max-h-96 opacity-100"
-        : "max-h-0 opacity-0"
-    }
-  `}
->
-  <TabPreviewList tabs={tabs} />
-</div>
-
+ 
 
 </div>
 
-<ConfirmDialog
-  open={showDeleteDialog}
-  title="Delete Workspace"
-  message={`Are you sure you want to delete "${session.name}"?\n\nThis action cannot be undone.`}
-  confirmText="Delete"
-  cancelText="Cancel"
-  onConfirm={() => {
-    onDelete(session.id);
-    setShowDeleteDialog(false);
-  }}
-  onCancel={() => setShowDeleteDialog(false)}
-/>
+
+
+
 
   </Card>
 );
