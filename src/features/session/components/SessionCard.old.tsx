@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronUp,
   Clock3,
+  Globe,
 } from "lucide-react";
 
 import {
@@ -172,12 +173,14 @@ hover:border-rose-500
 
 <div className="flex flex-wrap gap-2">
 
-  <Badge>
-    🌐 {session.tabCount} Tabs
+  <Badge className="flex items-center gap-1">
+    <Globe size={14} className="text-slate-300" />
+    <span>{session.tabCount} Tabs</span>
   </Badge>
 
-  <Badge>
-    🔄 {session.restoreCount} Restores
+  <Badge className="flex items-center gap-1">
+    <RotateCcw size={14} className="text-slate-300" />
+    <span>{session.restoreCount} Restores</span>
   </Badge>
 
 </div>
