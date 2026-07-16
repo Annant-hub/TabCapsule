@@ -44,7 +44,7 @@ const [sort, setSort] = useState<
           </div>
         </div>
         <p className="mt-3 text-xs text-rose-300">
-          🐾 Love Animals
+          🐾 Protect Wildlife
         </p>
       </header>
 
