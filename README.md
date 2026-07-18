@@ -21,7 +21,7 @@ This project was built to solve a simple problem: losing important tabs while sw
 
 ### Saved Sessions
 
-> ** Screenshot II**
+> **Screenshot II**
 >
 > <img width="522" height="752" alt="Screenshot 2026-07-17 120321" src="https://github.com/user-attachments/assets/db40218c-e201-45fe-9f17-238f53f40a4a" />
 
