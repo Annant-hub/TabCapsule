@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-
 import { DuplicateWorkspaceError } from "../errors";
-
 import {
   Card,
   Button,
@@ -121,14 +119,12 @@ export function SaveWorkspaceButton({
               }
             }
           />
-
           <Button
             onClick={handleSave}
             disabled={saving}
             className="flex w-full items-center justify-center gap-2"
           >
             <Plus size={18} />
-
             {saving
               ? "Saving..."
               : "Save Workspace"}

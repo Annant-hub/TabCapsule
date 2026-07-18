@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "TabCapsule",
+  "version": "1.0.0",
+  "description": "Save and restore browser workspaces instantly",
+  "permissions": [
+    "tabs",
+    "storage",
+    "windows"
+  ],
+  "optional_permissions": [
+    "activeTab"
+  ],
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_title": "TabCapsule"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "icon/icon-16.png",
+    "32": "icon/icon-32.png",
+    "48": "icon/icon-48.png",
+    "128": "icon/icon-128.png"
+  }
+}
