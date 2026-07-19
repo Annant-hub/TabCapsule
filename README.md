@@ -48,7 +48,7 @@ This project was built to solve a simple problem: losing important tabs while sw
 
 ## Why I Built This
 
-While working on multiple projects, I usually end up with 30–50 tabs open. Closing Chrome meant either losing those tabs or relying on the browser's history.
+While working on multiple projects, I usually end up with 10–15 tabs open. Closing Chrome meant either losing those tabs or relying on the browser's history.
 
 I wanted something that could:
 
